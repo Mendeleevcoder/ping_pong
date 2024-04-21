@@ -8,6 +8,9 @@ WIDTH = 600
 HEIGHT = 500
 FPS = 60
 
+score1 = 0
+score2 = 0
+
 BACKGROUND = (randint(0, 255), randint(0, 255), randint(0, 255))
 WHITE = (255, 255, 255)
 RED = (150, 0, 0)
@@ -60,9 +63,9 @@ class Ball(GameSprite):
         self.rect.x += self.dx
         self.rect.y += self.dy
 
-racket1 = Player(K_w, K_s, "racket.png", 30, 200, 50, 150 , 4)
-racket2 = Player(K_UP, K_DOWN, "racket.png", 520, 200, 50, 150, 4)
-ball = Ball("tenis_ball.png", 200, 200, 50, 50, 3, 3)
+racket1 = Player(K_w, K_s, "racket.png", 30, 200, 50, 150 , 6)
+racket2 = Player(K_UP, K_DOWN, "racket.png", 520, 200, 50, 150, 6)
+ball = Ball("tenis_ball.png", 200, 200, 50, 50, 5, 5)
 
 run = True
 finish = False
@@ -80,6 +83,29 @@ while run:
         racket1.update()
         racket2.update()
         ball.update()
+
+        if ball.rect.y > HEIGHT - 50  or ball.rect.y < 0:
+            ball.dy *= -1
+
+        if sprite.collide_rect(racket1, ball) or sprite.collide_rect(racket2, ball):
+            ball.dx *= -1
+
+        score_text = f"{score1}:{score2}"
+        score_img = font_score.render(score_text, True, WHITE)
+        score_rect = score_img.get_rect(center=(WIDTH // 2, 50))
+        window.blit(score_img, score_rect)
+
+        if ball.rect.x == -100:
+            score2 += 1
+            ball.rect.x = 200
+            ball.rect.y = 200
+
+        if ball.rect.x >= 700:
+            score1 += 1
+            ball.rect.x = 200
+            ball.rect.y = 200
+            
+
 
     display.update()
     clock.tick(FPS)
